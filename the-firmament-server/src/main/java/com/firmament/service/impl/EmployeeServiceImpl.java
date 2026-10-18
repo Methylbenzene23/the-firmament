@@ -7,9 +7,11 @@ import com.firmament.context.BaseContext;
 import com.firmament.dto.EmployeeDTO;
 import com.firmament.dto.EmployeeLoginDTO;
 import com.firmament.dto.EmployeePageQueryDTO;
+import com.firmament.dto.PasswordEditDTO;
 import com.firmament.entity.Employee;
 import com.firmament.exception.AccountLockedException;
 import com.firmament.exception.AccountNotFoundException;
+import com.firmament.exception.PasswordEditFailedException;
 import com.firmament.exception.PasswordErrorException;
 import com.firmament.mapper.EmployeeMapper;
 import com.firmament.result.PageResult;
@@ -21,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
 @Service
@@ -111,10 +114,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void switchStatus(Long id, Integer status) {
         Employee employee = Employee.builder()
-                        .id(id)
-                        .status(status)
-                        .updateTime(LocalDateTime.now())
-                        .build();
+                .id(id)
+                .status(status)
+                .updateTime(LocalDateTime.now())
+                .updateUser(BaseContext.getCurrentId())
+                .build();
 
         employeeMapper.update(employee);
 
@@ -133,12 +137,42 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employee;
     }
 
+    /**
+     * 修改员工信息
+     *
+     * @param employeeDTO
+     * @return
+     */
     @Override
     public void edit(EmployeeDTO employeeDTO) {
         Employee employee = new Employee();
         BeanUtils.copyProperties(employeeDTO,employee);
         employee.setUpdateTime(LocalDateTime.now());
+        employee.setUpdateUser(BaseContext.getCurrentId());
         employeeMapper.update(employee);
+    }
+
+    /**
+     * 修改员工登陆密码
+     *
+     * @param passwordEditDTO
+     * @return
+     */
+    @Override
+    public void editPassword(PasswordEditDTO passwordEditDTO) {
+        Long id = BaseContext.getCurrentId();
+        String oldPassword = employeeMapper.selectById(id).getPassword();
+        if(DigestUtils.md5DigestAsHex(passwordEditDTO.getOldPassword().getBytes()).equals(oldPassword)){
+            Employee employee = Employee.builder()
+                    .id(id)
+                    .password(DigestUtils.md5DigestAsHex(passwordEditDTO.getNewPassword().getBytes()))
+                    .updateTime(LocalDateTime.now())
+                    .updateUser(BaseContext.getCurrentId())
+                    .build();
+            employeeMapper.update(employee);
+        }else{
+            throw new PasswordEditFailedException(MessageConstant.PASSWORD_ERROR);
+        }
     }
 
 }

@@ -4,6 +4,7 @@ import com.firmament.constant.JwtClaimsConstant;
 import com.firmament.dto.EmployeeDTO;
 import com.firmament.dto.EmployeeLoginDTO;
 import com.firmament.dto.EmployeePageQueryDTO;
+import com.firmament.dto.PasswordEditDTO;
 import com.firmament.entity.Employee;
 import com.firmament.properties.JwtProperties;
 import com.firmament.result.PageResult;
@@ -144,6 +145,20 @@ public class EmployeeController {
     public Result edit(@RequestBody EmployeeDTO employeeDTO){
         log.info("修改员工信息 {}",employeeDTO);
         employeeService.edit(employeeDTO);
+        return Result.success();
+    }
+
+    /**
+     * 修改员工登陆密码
+     *
+     * @param passwordEditDTO
+     * @return
+     */
+    @PutMapping("/editPassword")
+    @ApiOperation("修改员工登录密码")
+    public Result editPassword(@RequestBody PasswordEditDTO passwordEditDTO){
+        log.info("修改员工密码: {}",passwordEditDTO);
+        employeeService.editPassword(passwordEditDTO);
         return Result.success();
     }
 }

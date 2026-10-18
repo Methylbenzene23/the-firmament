@@ -19,7 +19,7 @@ public interface EmployeeMapper {
     Employee getByUsername(String username);
 
     /**
-     * 根据用户名查询员工
+     * 新增员工
      * @param employee
      * @return
      */
@@ -28,7 +28,7 @@ public interface EmployeeMapper {
     void insert(Employee employee);
 
     /**
-     * 根据用户名查询员工
+     * 根据用户名分页查询员工
      * @param employeePageQueryDTO
      * @return
      */

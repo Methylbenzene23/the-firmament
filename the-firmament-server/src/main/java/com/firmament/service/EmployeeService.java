@@ -3,6 +3,7 @@ package com.firmament.service;
 import com.firmament.dto.EmployeeDTO;
 import com.firmament.dto.EmployeeLoginDTO;
 import com.firmament.dto.EmployeePageQueryDTO;
+import com.firmament.dto.PasswordEditDTO;
 import com.firmament.entity.Employee;
 import com.firmament.result.PageResult;
 
@@ -53,4 +54,12 @@ public interface EmployeeService {
      * @return
      */
     void edit(EmployeeDTO employeeDTO);
+
+    /**
+     * 修改员工登陆密码
+     *
+     * @param passwordEditDTO
+     * @return
+     */
+    void editPassword(PasswordEditDTO passwordEditDTO);
 }
