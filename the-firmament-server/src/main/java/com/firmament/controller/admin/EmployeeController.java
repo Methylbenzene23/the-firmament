@@ -1,6 +1,7 @@
 package com.firmament.controller.admin;
 
 import com.firmament.constant.JwtClaimsConstant;
+import com.firmament.dto.EmployeeDTO;
 import com.firmament.dto.EmployeeLoginDTO;
 import com.firmament.entity.Employee;
 import com.firmament.properties.JwtProperties;
@@ -73,6 +74,20 @@ public class EmployeeController {
     @PostMapping("/logout")
     @ApiOperation("员工登出")
     public Result<String> logout() {
+        return Result.success();
+    }
+
+    /**
+     * 新增员工
+     *
+     * @param employeeDTO
+     * @return
+     */
+    @PostMapping
+    @ApiOperation("新增员工")
+    public Result save(@RequestBody EmployeeDTO employeeDTO){
+        log.info("新增员工:{}",employeeDTO);
+        employeeService.save(employeeDTO);
         return Result.success();
     }
 

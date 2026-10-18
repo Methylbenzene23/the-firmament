@@ -1,7 +1,10 @@
 package com.firmament.service.impl;
 
 import com.firmament.constant.MessageConstant;
+import com.firmament.constant.PasswordConstant;
 import com.firmament.constant.StatusConstant;
+import com.firmament.context.BaseContext;
+import com.firmament.dto.EmployeeDTO;
 import com.firmament.dto.EmployeeLoginDTO;
 import com.firmament.entity.Employee;
 import com.firmament.exception.AccountLockedException;
@@ -9,9 +12,12 @@ import com.firmament.exception.AccountNotFoundException;
 import com.firmament.exception.PasswordErrorException;
 import com.firmament.mapper.EmployeeMapper;
 import com.firmament.service.EmployeeService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+
+import java.time.LocalDateTime;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -41,7 +47,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         //MD5加密密码
         password = DigestUtils.md5DigestAsHex(password.getBytes());
         //密码比对
-        // TODO 后期需要进行md5加密，然后再进行比对
         if (!password.equals(employee.getPassword())) {
             //密码错误
             throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
@@ -54,6 +59,28 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         //3、返回实体对象
         return employee;
+    }
+
+    /**
+     * 新增员工
+     *
+     * @param employeeDTO
+     */
+    @Override
+    public void save(EmployeeDTO employeeDTO) {
+        Employee employee = new Employee();
+
+        // 对象属性拷贝
+        BeanUtils.copyProperties(employeeDTO,employee);
+        //设置其他属性
+        employee.setPassword(DigestUtils.md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes()));
+        employee.setStatus(StatusConstant.ENABLE);
+        employee.setCreateTime(LocalDateTime.now());
+        employee.setUpdateTime(LocalDateTime.now());
+        employee.setCreateUser(BaseContext.getCurrentId());
+        employee.setUpdateUser(BaseContext.getCurrentId());
+
+        employeeMapper.insert(employee);
     }
 
 }
