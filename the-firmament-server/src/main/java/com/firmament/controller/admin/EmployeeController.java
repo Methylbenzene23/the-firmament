@@ -3,8 +3,10 @@ package com.firmament.controller.admin;
 import com.firmament.constant.JwtClaimsConstant;
 import com.firmament.dto.EmployeeDTO;
 import com.firmament.dto.EmployeeLoginDTO;
+import com.firmament.dto.EmployeePageQueryDTO;
 import com.firmament.entity.Employee;
 import com.firmament.properties.JwtProperties;
+import com.firmament.result.PageResult;
 import com.firmament.result.Result;
 import com.firmament.service.EmployeeService;
 import com.firmament.utils.JwtUtil;
@@ -13,10 +15,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -89,6 +88,20 @@ public class EmployeeController {
         log.info("新增员工:{}",employeeDTO);
         employeeService.save(employeeDTO);
         return Result.success();
+    }
+
+    /**
+     * 根据姓名分页查询员工
+     *
+     * @param employeePageQueryDTO
+     * @return
+     */
+    @GetMapping("/page")
+    @ApiOperation("根据姓名分页查询员工")
+    public Result<PageResult> page(EmployeePageQueryDTO employeePageQueryDTO){
+        log.info("分页查询，姓名：{}",employeePageQueryDTO.getName());
+        PageResult pageResult = employeeService.pageQuery(employeePageQueryDTO);
+        return Result.success(pageResult);
     }
 
 }

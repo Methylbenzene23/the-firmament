@@ -1,6 +1,8 @@
 package com.firmament.mapper;
 
+import com.firmament.dto.EmployeePageQueryDTO;
 import com.firmament.entity.Employee;
+import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -24,4 +26,11 @@ public interface EmployeeMapper {
     @Insert("insert into employee(id, name, username, password, phone, sex, id_number, status, create_time, update_time, create_user, update_user)" +
             "values (#{id}, #{name}, #{username}, #{password}, #{phone}, #{sex} ,#{idNumber}, #{status}, #{createTime}, #{updateTime}, #{createUser}, #{updateUser})")
     void insert(Employee employee);
+
+    /**
+     * 根据用户名查询员工
+     * @param employeePageQueryDTO
+     * @return
+     */
+    Page<Employee> pageSelect(EmployeePageQueryDTO employeePageQueryDTO);
 }

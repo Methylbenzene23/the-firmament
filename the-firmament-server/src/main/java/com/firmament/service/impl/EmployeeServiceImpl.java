@@ -6,12 +6,16 @@ import com.firmament.constant.StatusConstant;
 import com.firmament.context.BaseContext;
 import com.firmament.dto.EmployeeDTO;
 import com.firmament.dto.EmployeeLoginDTO;
+import com.firmament.dto.EmployeePageQueryDTO;
 import com.firmament.entity.Employee;
 import com.firmament.exception.AccountLockedException;
 import com.firmament.exception.AccountNotFoundException;
 import com.firmament.exception.PasswordErrorException;
 import com.firmament.mapper.EmployeeMapper;
+import com.firmament.result.PageResult;
 import com.firmament.service.EmployeeService;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -81,6 +85,20 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setUpdateUser(BaseContext.getCurrentId());
 
         employeeMapper.insert(employee);
+    }
+
+    /**
+     * 根据姓名分页查询
+     *
+     * @param employeePageQueryDTO
+     */
+    public PageResult pageQuery(EmployeePageQueryDTO employeePageQueryDTO) {
+        //开始分页查询
+        PageHelper.startPage(employeePageQueryDTO.getPage(),employeePageQueryDTO.getPageSize());
+
+        Page<Employee> page = employeeMapper.pageSelect(employeePageQueryDTO);
+        PageResult pageResult = new PageResult(page.getTotal(),page.getResult());
+        return pageResult;
     }
 
 }
