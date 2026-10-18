@@ -104,4 +104,19 @@ public class EmployeeController {
         return Result.success(pageResult);
     }
 
+    /**
+     * 启用禁用员工账号
+     *
+     * @param id
+     * @param status
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    @ApiOperation("切换员工账号状态（启用/禁用）")
+    public Result switchStatus(Long id, @PathVariable Integer status){
+        log.info("切换账号状态，id: {}, status: {}",id,status);
+        employeeService.switchStatus(id, status);
+        return Result.success();
+    }
+
 }

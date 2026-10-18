@@ -101,4 +101,23 @@ public class EmployeeServiceImpl implements EmployeeService {
         return pageResult;
     }
 
+    /**
+     * 启用禁用员工账号
+     *
+     * @param id
+     * @param status
+     * @return
+     */
+    @Override
+    public void switchStatus(Long id, Integer status) {
+        Employee employee = Employee.builder()
+                        .id(id)
+                        .status(status)
+                        .updateTime(LocalDateTime.now())
+                        .build();
+
+        employeeMapper.update(employee);
+
+    }
+
 }
