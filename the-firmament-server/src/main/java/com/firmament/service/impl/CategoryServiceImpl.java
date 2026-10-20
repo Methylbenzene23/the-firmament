@@ -1,11 +1,15 @@
 package com.firmament.service.impl;
 
+import com.firmament.constant.MessageConstant;
 import com.firmament.constant.StatusConstant;
 import com.firmament.context.BaseContext;
 import com.firmament.dto.CategoryDTO;
 import com.firmament.dto.CategoryPageQueryDTO;
 import com.firmament.entity.Category;
+import com.firmament.exception.DeletionNotAllowedException;
 import com.firmament.mapper.CategoryMapper;
+import com.firmament.mapper.DishMapper;
+import com.firmament.mapper.DishSetMapper;
 import com.firmament.result.PageResult;
 import com.firmament.service.CategoryService;
 import com.github.pagehelper.Page;
@@ -21,6 +25,12 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     private CategoryMapper categoryMapper;
+
+    @Autowired
+    private DishMapper dishMapper;
+
+    @Autowired
+    private DishSetMapper dishSetMapper;
 
     /**
      * 新增菜品分类
@@ -97,6 +107,12 @@ public class CategoryServiceImpl implements CategoryService {
      */
     @Override
     public void deleteById(Long id) {
+        if(dishMapper.countByCategoryId(id) > 0){
+            throw new DeletionNotAllowedException(MessageConstant.CATEGORY_BE_RELATED_BY_DISH);
+        }
+        if(dishSetMapper.countByCategoryId(id) > 0){
+            throw new DeletionNotAllowedException(MessageConstant.CATEGORY_BE_RELATED_BY_SETMEAL);
+        }
         categoryMapper.delete(id);
     }
 
