@@ -1,7 +1,9 @@
 package com.firmament.mapper;
 
+import com.firmament.annotation.MapperAutoFill;
 import com.firmament.dto.CategoryPageQueryDTO;
 import com.firmament.entity.Category;
+import com.firmament.enumeration.OperationType;
 import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
@@ -16,6 +18,7 @@ public interface CategoryMapper {
      * @param category
      * @return
      */
+    @MapperAutoFill(OperationType.INSERT)
     @Insert("insert into category(id, type, name, sort, status, create_time, update_time, create_user, update_user) " +
             "values (#{id}, #{type}, #{name}, #{sort}, #{status}, #{createTime}, #{updateTime}, #{createUser}, #{updateUser})")
     void insert(Category category);
@@ -32,6 +35,7 @@ public interface CategoryMapper {
      * @param category
      * @return
      */
+    @MapperAutoFill(OperationType.UPDATE)
     void update(Category category);
 
     /**

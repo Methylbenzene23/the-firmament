@@ -1,7 +1,9 @@
 package com.firmament.mapper;
 
+import com.firmament.annotation.MapperAutoFill;
 import com.firmament.dto.EmployeePageQueryDTO;
 import com.firmament.entity.Employee;
+import com.firmament.enumeration.OperationType;
 import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -23,6 +25,7 @@ public interface EmployeeMapper {
      * @param employee
      * @return
      */
+    @MapperAutoFill(OperationType.INSERT)
     @Insert("insert into employee(id, name, username, password, phone, sex, id_number, status, create_time, update_time, create_user, update_user)" +
             "values (#{id}, #{name}, #{username}, #{password}, #{phone}, #{sex} ,#{idNumber}, #{status}, #{createTime}, #{updateTime}, #{createUser}, #{updateUser})")
     void insert(Employee employee);
@@ -40,6 +43,7 @@ public interface EmployeeMapper {
      * @param employee
      * @return
      */
+    @MapperAutoFill(OperationType.UPDATE)
     void update(Employee employee);
 
     /**
