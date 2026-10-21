@@ -1,5 +1,9 @@
 package com.firmament.mapper;
 
+import com.firmament.annotation.MapperAutoFill;
+import com.firmament.entity.Dish;
+import com.firmament.enumeration.OperationType;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -13,5 +17,13 @@ public interface DishMapper {
      */
     @Select("select count(id) from dish where category_id = #{categoryId}")
     Integer countByCategoryId(Long categoryId);
+
+    /**
+     * 插入菜品
+     *
+     * @param dish
+     */
+    @MapperAutoFill(OperationType.INSERT)
+    void insert(Dish dish);
 
 }
