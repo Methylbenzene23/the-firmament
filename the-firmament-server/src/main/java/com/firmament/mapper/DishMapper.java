@@ -1,8 +1,11 @@
 package com.firmament.mapper;
 
 import com.firmament.annotation.MapperAutoFill;
+import com.firmament.dto.DishPageQueryDTO;
 import com.firmament.entity.Dish;
 import com.firmament.enumeration.OperationType;
+import com.firmament.vo.DishVO;
+import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -26,4 +29,11 @@ public interface DishMapper {
     @MapperAutoFill(OperationType.INSERT)
     void insert(Dish dish);
 
+    /**
+     * 菜品分页查询
+     *
+     * @param dishPageQueryDTO
+     * @return
+     */
+    Page<DishVO> pageSelect(DishPageQueryDTO dishPageQueryDTO);
 }
