@@ -3,6 +3,7 @@ package com.firmament.controller.admin;
 import com.firmament.constant.StatusConstant;
 import com.firmament.dto.DishDTO;
 import com.firmament.dto.DishPageQueryDTO;
+import com.firmament.entity.Dish;
 import com.firmament.result.PageResult;
 import com.firmament.result.Result;
 import com.firmament.service.DishService;
@@ -107,5 +108,19 @@ public class DishController {
         log.info("{}菜品id: {}",status.equals(StatusConstant.ENABLE) ? "启售":"停售", id);
         dishService.switchStatus(id,status);
         return Result.success();
+    }
+
+    /**
+     * 查询指定分类ID内的菜品
+     *
+     * @param categoryId
+     * @return
+     */
+    @GetMapping("/list")
+    @ApiOperation("查询指定分类ID内的菜品")
+    public Result<Dish[]> getByCategoryId(Long categoryId){
+        log.info("查询分类ID: {} 内的菜品",categoryId);
+        Dish[] dishes = dishService.getByCategoryId(categoryId);
+        return Result.success(dishes);
     }
 }

@@ -2,7 +2,9 @@ package com.firmament.service;
 
 import com.firmament.dto.DishDTO;
 import com.firmament.dto.DishPageQueryDTO;
+import com.firmament.entity.Dish;
 import com.firmament.result.PageResult;
+import com.firmament.result.Result;
 import com.firmament.vo.DishVO;
 import org.springframework.stereotype.Service;
 
@@ -56,4 +58,12 @@ public interface DishService {
      * @return
      */
     void switchStatus(Long id, Integer status);
+
+    /**
+     * 查询指定分类ID内的菜品
+     *
+     * @param categoryId
+     * @return
+     */
+    Dish[] getByCategoryId(Long categoryId);
 }
