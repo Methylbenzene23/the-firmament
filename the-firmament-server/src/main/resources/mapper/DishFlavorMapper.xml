@@ -9,4 +9,8 @@
             (#{falvor.dishId}, #{falvor.name}, #{falvor.value})
         </foreach>
     </insert>
+    <delete id="deleteByDishIds">
+        delete from setmeal_dish where dish_id in
+        <foreach collection="dishIds" item="dishId" open="(" separator="," close=")">#{dishId}</foreach>
+    </delete>
 </mapper>

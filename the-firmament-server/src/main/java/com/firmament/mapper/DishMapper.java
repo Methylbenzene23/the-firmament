@@ -6,9 +6,12 @@ import com.firmament.entity.Dish;
 import com.firmament.enumeration.OperationType;
 import com.firmament.vo.DishVO;
 import com.github.pagehelper.Page;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 @Mapper
 public interface DishMapper {
@@ -36,4 +39,19 @@ public interface DishMapper {
      * @return
      */
     Page<DishVO> pageSelect(DishPageQueryDTO dishPageQueryDTO);
+
+    /**
+     * 根据id查询菜品
+     *
+     * @return
+     */
+    @Select("select * from dish where id = #{id}")
+    Dish selectById(Long id);
+
+    /**
+     * 根据批量ID删除菜品
+     *
+     * @param ids
+     */
+    void deleteByIds(List<Long> ids);
 }

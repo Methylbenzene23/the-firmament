@@ -1,11 +1,15 @@
 package com.firmament.service.impl;
 
+import com.firmament.constant.MessageConstant;
+import com.firmament.constant.StatusConstant;
 import com.firmament.dto.DishDTO;
 import com.firmament.dto.DishPageQueryDTO;
 import com.firmament.entity.Dish;
 import com.firmament.entity.DishFlavor;
+import com.firmament.exception.DeletionNotAllowedException;
 import com.firmament.mapper.DishMapper;
 import com.firmament.mapper.DishFlavorMapper;
+import com.firmament.mapper.SetmealDishMapper;
 import com.firmament.result.PageResult;
 import com.firmament.service.DishService;
 import com.firmament.vo.DishVO;
@@ -26,6 +30,8 @@ public class DishServiceImpl implements DishService {
 
     @Autowired
     private DishFlavorMapper dishFlavorMapper;
+    @Autowired
+    private SetmealDishMapper setmealDishMapper;
 
 
     /**
@@ -64,5 +70,28 @@ public class DishServiceImpl implements DishService {
         Page<DishVO> page = dishMapper.pageSelect(dishPageQueryDTO);
         PageResult pageResult = new PageResult(page.getTotal(),page.getResult());
         return pageResult;
+    }
+
+    /**
+     * 批量删除菜品
+     *
+     * @param ids
+     */
+    @Override
+    @Transactional
+    public void deleteBatch(List<Long> ids) {
+        for (Long id : ids) {
+            Dish dish = dishMapper.selectById(id);
+            if(dish.getStatus() == StatusConstant.ENABLE){
+                throw new DeletionNotAllowedException(MessageConstant.DISH_ON_SALE);
+            }
+        }
+        List<Long> setmealIds = setmealDishMapper.selectSetmealIdsByDishIds(ids);
+        if(setmealIds != null && !setmealIds.isEmpty()){
+            throw new DeletionNotAllowedException(MessageConstant.DISH_BE_RELATED_BY_SETMEAL);
+        }
+
+        dishMapper.deleteByIds(ids);
+        dishFlavorMapper.deleteByDishIds(ids);
     }
 }

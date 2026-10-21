@@ -5,6 +5,8 @@ import com.firmament.dto.DishPageQueryDTO;
 import com.firmament.result.PageResult;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 public interface DishService {
 
     /**
@@ -21,4 +23,11 @@ public interface DishService {
      * @return
      */
     PageResult page(DishPageQueryDTO dishPageQueryDTO);
+
+    /**
+     * 批量删除菜品
+     *
+     * @param ids
+     */
+    void deleteBatch(List<Long> ids);
 }
