@@ -1,5 +1,6 @@
 package com.firmament.controller.admin;
 
+import com.firmament.constant.StatusConstant;
 import com.firmament.dto.DishDTO;
 import com.firmament.dto.DishPageQueryDTO;
 import com.firmament.result.PageResult;
@@ -93,4 +94,18 @@ public class DishController {
         return Result.success();
     }
 
+    /**
+     * 切换菜品状态
+     *
+     * @param id
+     * @param status
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    @ApiOperation("切换菜品启售/停售")
+    public Result switchStatus(Long id, @PathVariable Integer status){
+        log.info("{}菜品id: {}",status.equals(StatusConstant.ENABLE) ? "启售":"停售", id);
+        dishService.switchStatus(id,status);
+        return Result.success();
+    }
 }

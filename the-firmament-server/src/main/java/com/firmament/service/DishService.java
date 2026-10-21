@@ -47,4 +47,13 @@ public interface DishService {
      * @return
      */
     void editWithFlavor(DishDTO dishDTO);
+
+    /**
+     * 切换菜品状态
+     *
+     * @param id
+     * @param status
+     * @return
+     */
+    void switchStatus(Long id, Integer status);
 }
