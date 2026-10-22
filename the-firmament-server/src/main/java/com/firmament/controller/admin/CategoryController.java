@@ -15,9 +15,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/admin/category")
-@Api(tags = "菜品分类相关接口")
+@Api(tags = "菜品分类接口")
 @Slf4j
 public class CategoryController {
 
@@ -98,14 +100,14 @@ public class CategoryController {
     /**
      * 根据类型查询菜品分类
      *
-     * @param type
+     * @param categoryPageQueryDTO
      * @return
      */
     @GetMapping("/list")
     @ApiOperation("查询指定分类的菜品分类")
-    public Result<Category[]> list(Integer type){
-        log.info("查询“{}”类型的菜品分类",type.equals(CategoryTypeConstant.DISHES_CLASSIFY) ? "菜品分类":"套餐分类");
-        Category[] categories = categoryService.list(type);
+    public Result<List> list(CategoryPageQueryDTO categoryPageQueryDTO){
+        log.info("查询“{}”类型的菜品分类",categoryPageQueryDTO.getType().equals(CategoryTypeConstant.DISHES_CLASSIFY) ? "菜品分类":"套餐分类");
+        List categories = categoryService.page(categoryPageQueryDTO).getRecords();
         return Result.success(categories);
     }
 
