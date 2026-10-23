@@ -8,10 +8,15 @@ spring:
     allow-circular-references: true
   datasource:
     druid:
-      driver-class-name: ${firmament.datasource.driver-class-name}
-      url: jdbc:mysql://${firmament.datasource.host}:${firmament.datasource.port}/${firmament.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
-      username: ${firmament.datasource.username}
-      password: ${firmament.datasource.password}
+      driver-class-name: ${firmament-dev.datasource.driver-class-name}
+      url: jdbc:mysql://${firmament-dev.datasource.host}:${firmament-dev.datasource.port}/${firmament-dev.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+      username: ${firmament-dev.datasource.username}
+      password: ${firmament-dev.datasource.password}
+  redis:
+    host: ${firmament-dev.redis.host}
+    port: ${firmament-dev.redis.port}
+    password: ${firmament-dev.datasource.password}
+    database: 0
 
 mybatis:
   #mapper配置文件
@@ -32,6 +37,12 @@ logging:
 firmament:
   jwt:
     # 设置jwt过期时间
-    admin-ttl: 7200000
+    admin-ttl: ${firmament-dev.jwt.admin-ttl}
     # 设置前端传递过来的令牌名称
     admin-token-name: token
+    admin-secret-key: hX0sV8sU9jR7rC0fT3iT0wV9lU6dW4pS2cO3rT2wG8sW2eG0zG8mR1nZ3vB0yE9o
+  alioss:
+    endpoint: ${firmament-dev.alioss.endpoint}
+    bucket-name: ${firmament-dev.alioss.bucket-name}
+    access-key-id: ${firmament-dev.alioss.access-key-id}
+    access-key-secret: ${firmament-dev.alioss.access-key-secret}
