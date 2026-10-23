@@ -15,7 +15,7 @@ spring:
   redis:
     host: ${firmament-dev.redis.host}
     port: ${firmament-dev.redis.port}
-    password: ${firmament-dev.datasource.password}
+    password: ${firmament-dev.redis.password}
     database: 0
 
 mybatis:

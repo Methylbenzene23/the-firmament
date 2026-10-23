@@ -154,11 +154,15 @@ public class EmployeeServiceImpl implements EmployeeService {
         Long id = BaseContext.getCurrentId();
         String oldPassword = employeeMapper.selectById(id).getPassword();
         if(DigestUtils.md5DigestAsHex(passwordEditDTO.getOldPassword().getBytes()).equals(oldPassword)){
-            Employee employee = Employee.builder()
-                    .id(id)
-                    .password(DigestUtils.md5DigestAsHex(passwordEditDTO.getNewPassword().getBytes()))
-                    .build();
-            employeeMapper.update(employee);
+            try {
+                Employee employee = Employee.builder()
+                        .id(id)
+                        .password(DigestUtils.md5DigestAsHex(passwordEditDTO.getNewPassword().getBytes()))
+                        .build();
+                employeeMapper.update(employee);
+            } catch (Exception e) {
+                throw new RuntimeException(MessageConstant.PASSWORD_EDIT_FAILED);
+            }
         }else{
             throw new PasswordEditFailedException(MessageConstant.PASSWORD_ERROR);
         }

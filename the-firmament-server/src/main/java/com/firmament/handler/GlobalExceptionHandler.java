@@ -2,8 +2,10 @@ package com.firmament.handler;
 
 import com.firmament.constant.MessageConstant;
 import com.firmament.exception.BaseException;
+import com.firmament.exception.UserNotLoginException;
 import com.firmament.result.Result;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.datasource.init.UncategorizedScriptException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -28,7 +30,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
-    public Result exceptionHandler(SQLIntegrityConstraintViolationException e){
+    public Result sqlExceptionHandler(SQLIntegrityConstraintViolationException e){
         String message = e.getMessage();
         //Duplicate entry 'ExampleName' for key 'employee.idx_username'
         if(message.contains("Duplicate entry")){
@@ -37,6 +39,11 @@ public class GlobalExceptionHandler {
             return Result.error(username + MessageConstant.ALREADY_EXISTS);
         }
         return Result.error(MessageConstant.UNKNOWN_ERROR);
+    }
+
+    @ExceptionHandler
+    public Result userNotLoginExceptionHandler(UserNotLoginException e){
+        return Result.error(MessageConstant.USER_NOT_LOGIN);
     }
 
 }

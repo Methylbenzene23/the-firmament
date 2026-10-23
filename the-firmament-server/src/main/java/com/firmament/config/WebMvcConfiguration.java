@@ -43,20 +43,42 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
     }
 
     /**
-     * 通过knife4j生成接口文档
+     * 通过knife4j生成admin接口文档
      * @return
      */
     @Bean
-    public Docket docket() {
+    public Docket docketAdmin() {
         ApiInfo apiInfo = new ApiInfoBuilder()
                 .title("The Firmament")
                 .version("2.0")
                 .description("Interface Document")
                 .build();
         Docket docket = new Docket(DocumentationType.SWAGGER_2)
+                .groupName("商家端接口")
                 .apiInfo(apiInfo)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.firmament.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.firmament.controller.admin"))
+                .paths(PathSelectors.any())
+                .build();
+        return docket;
+    }
+
+    /**
+     * 通过knife4j生成User接口文档
+     * @return
+     */
+    @Bean
+    public Docket docketUser() {
+        ApiInfo apiInfo = new ApiInfoBuilder()
+                .title("The Firmament")
+                .version("2.0")
+                .description("Interface Document")
+                .build();
+        Docket docket = new Docket(DocumentationType.SWAGGER_2)
+                .groupName("用户端接口")
+                .apiInfo(apiInfo)
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.firmament.controller.user"))
                 .paths(PathSelectors.any())
                 .build();
         return docket;
