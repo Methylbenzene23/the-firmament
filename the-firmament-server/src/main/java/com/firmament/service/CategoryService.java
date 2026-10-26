@@ -5,6 +5,8 @@ import com.firmament.dto.CategoryPageQueryDTO;
 import com.firmament.entity.Category;
 import com.firmament.result.PageResult;
 
+import java.util.List;
+
 public interface CategoryService {
 
     /**
@@ -54,5 +56,5 @@ public interface CategoryService {
      * @param type
      * @return
      */
-    Category[] list(Integer type);
+    List<Category> list(Integer type);
 }

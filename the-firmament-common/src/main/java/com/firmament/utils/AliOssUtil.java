@@ -7,12 +7,21 @@ import com.aliyun.oss.OSSException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 @Data
 @AllArgsConstructor
 @Slf4j
 public class AliOssUtil {
+
+    /**
+     * 读取对象流时使用的缓冲区大小
+     */
+    private static final int BUFFER_SIZE = 8192;
 
     private String endpoint;
     private String accessKeyId;
@@ -65,4 +74,48 @@ public class AliOssUtil {
 
         return stringBuilder.toString();
     }
+
+    /**
+     * 下载文件，返回二进制文件流
+     *
+     * @param url
+     * @return 文件字节内容
+     */
+    public byte[] download(String url) {
+        String objectName = url.trim();
+        int schemeIndex = objectName.indexOf("://");
+        int pathIndex = objectName.indexOf('/', schemeIndex + 3);
+        objectName = pathIndex >= 0 ? objectName.substring(pathIndex + 1) : "";
+
+        // 创建OSSClient实例。
+        OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
+
+        try (InputStream in = ossClient.getObject(bucketName, objectName).getObjectContent();
+             ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+
+            byte[] buffer = new byte[BUFFER_SIZE];
+            int len;
+            while ((len = in.read(buffer)) != -1) {
+                out.write(buffer, 0, len);
+            }
+
+            byte[] content = out.toByteArray();
+            log.info("从OSS下载文件成功: bucket={}, object={}, size={} B", bucketName, objectName, content.length);
+            return content;
+
+        } catch (OSSException oe) {
+            log.error("OSS 下载失败, object={}, errorCode={}, requestId={}, message={}",
+                    objectName, oe.getErrorCode(), oe.getRequestId(), oe.getErrorMessage());
+            throw new RuntimeException("文件下载失败: " + oe.getErrorMessage(), oe);
+        } catch (ClientException ce) {
+            log.error("OSS 客户端异常, object={}, message={}", objectName, ce.getMessage());
+            throw new RuntimeException("文件下载失败: " + ce.getMessage(), ce);
+        } catch (IOException e) {
+            log.error("读取OSS对象流失败, object={}", objectName, e);
+            throw new RuntimeException("文件下载失败", e);
+        } finally {
+            ossClient.shutdown();
+        }
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.firmament.service.impl;
 
+import com.firmament.constant.CategoryTypeConstant;
 import com.firmament.constant.MessageConstant;
 import com.firmament.constant.StatusConstant;
 import com.firmament.dto.CategoryDTO;
@@ -16,6 +17,8 @@ import com.github.pagehelper.PageHelper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -116,9 +119,13 @@ public class CategoryServiceImpl implements CategoryService {
      * @return
      */
     @Override
-    public Category[] list(Integer type) {
-        Category[] categories = categoryMapper.selectByType(type);
-        return categories;
+    public List<Category> list(Integer type) {
+        if(type == null){
+            List<Category> categories = categoryMapper.selectByType(CategoryTypeConstant.DISHES_CLASSIFY);
+            categories.addAll(categoryMapper.selectByType(CategoryTypeConstant.DISHES_SET));
+            return categories;
+        }
+        return categoryMapper.selectByType(type);
     }
 
 }

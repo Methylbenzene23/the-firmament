@@ -5,6 +5,7 @@ import com.firmament.constant.StatusConstant;
 import com.firmament.context.BaseContext;
 import com.firmament.dto.SetmealDTO;
 import com.firmament.dto.SetmealPageQueryDTO;
+import com.firmament.entity.Dish;
 import com.firmament.entity.Setmeal;
 import com.firmament.entity.SetmealDish;
 import com.firmament.exception.DeletionNotAllowedException;
@@ -14,6 +15,7 @@ import com.firmament.mapper.SetmealDishMapper;
 import com.firmament.mapper.SetmealMapper;
 import com.firmament.result.PageResult;
 import com.firmament.service.SetmealService;
+import com.firmament.vo.DishItemVO;
 import com.firmament.vo.SetmealVO;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -156,5 +158,35 @@ public class SetmealServiceImpl implements SetmealService {
         }
         setmealMapper.deleteBatch(setmealIds);
         setmealDishMapper.deleteBatchBySetmealId(setmealIds);
+    }
+
+    /**
+     * 根据分类ID查询启售套餐
+     *
+     * @return
+     */
+    @Override
+    public List<Setmeal> list(Long categoryId) {
+        return setmealMapper.selectByCategoryId(categoryId);
+    }
+
+    /**
+     * 查询套餐中包含的菜品简要信息
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public List<DishItemVO> getBySetmealId(Long id) {
+        List<SetmealDish> setmealDishes = setmealDishMapper.selectSetmealDishesBySetmealId(id);
+        List<DishItemVO> dishItemVOS = new ArrayList<>();
+        for (SetmealDish setmealDish : setmealDishes) {
+            Long dishId = setmealDish.getDishId();
+            Dish dish = dishMapper.selectById(dishId);
+            DishItemVO dishItemVO = new DishItemVO();
+            BeanUtils.copyProperties(dish,dishItemVO);
+            dishItemVOS.add(dishItemVO);
+        }
+        return dishItemVOS;
     }
 }

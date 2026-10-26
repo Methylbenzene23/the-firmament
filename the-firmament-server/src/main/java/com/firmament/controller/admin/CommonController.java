@@ -2,6 +2,7 @@ package com.firmament.controller.admin;
 
 import com.firmament.constant.MessageConstant;
 import com.firmament.result.Result;
+import com.firmament.service.CommonService;
 import com.firmament.utils.AliOssUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -16,14 +17,14 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.UUID;
 
-@RestController
+@RestController("adminCommonController")
 @RequestMapping("/admin/common")
 @Api(tags = "通用接口")
 @Slf4j
 public class CommonController {
 
     @Autowired
-    private AliOssUtil aliOssUtil;
+    private CommonService commonService;
 
     /**
      * 通过阿里云OSS上传文件到云端
@@ -35,16 +36,9 @@ public class CommonController {
     @ApiOperation("文件上传")
     public Result<String> upload(MultipartFile file) {
         log.info("文件上传: {}",file);
-        try {
-            String originalFileName = file.getOriginalFilename();
-            String subName = originalFileName.substring(originalFileName.lastIndexOf('.'));
-            String uploadFileName = UUID.randomUUID() + subName;
-
-            String url = aliOssUtil.upload(file.getBytes(),uploadFileName);
+        String url = commonService.upload(file);
+        if(url != null){
             return Result.success(url);
-        } catch (IOException e) {
-            log.info("文件上传失败:\n{}", Arrays.toString(e.getStackTrace()));
-            e.printStackTrace();
         }
         return Result.error(MessageConstant.UPLOAD_FAILED);
     }

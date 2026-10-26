@@ -1,6 +1,7 @@
 package com.firmament.mapper;
 
 import com.firmament.annotation.MapperAutoFill;
+import com.firmament.dto.SetmealDTO;
 import com.firmament.dto.SetmealPageQueryDTO;
 import com.firmament.entity.Setmeal;
 import com.firmament.enumeration.OperationType;
@@ -52,4 +53,12 @@ public interface SetmealMapper {
      * @param setmealIds
      */
     void deleteBatch(List<Long> setmealIds);
+
+    /**
+     * 根据分类ID查询启售套餐
+     *
+     * @return
+     */
+    @Select("select * from setmeal where category_id = #{categoryId} and status = 1")
+    List<Setmeal> selectByCategoryId(Long CategoryId);
 }
