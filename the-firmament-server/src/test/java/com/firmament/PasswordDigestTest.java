@@ -11,7 +11,7 @@ public class PasswordDigestTest {
 
     @Test
     public void testMD5(){
-        String plainText = "xla???";
+        String plainText = "adminXLA";
         String cipherText = DigestUtils.md5DigestAsHex(plainText.getBytes());
         System.out.println(cipherText);
     }

@@ -37,12 +37,20 @@ logging:
 firmament:
   jwt:
     # 设置jwt过期时间
-    admin-ttl: ${firmament-dev.jwt.admin-ttl}
+    admin-ttl: ${firmament-dev.jwt.ttl}
     # 设置前端传递过来的令牌名称
     admin-token-name: token
     admin-secret-key: hX0sV8sU9jR7rC0fT3iT0wV9lU6dW4pS2cO3rT2wG8sW2eG0zG8mR1nZ3vB0yE9o
+    user-ttl: ${firmament.jwt.admin-ttl}
+    user-token-name: uW2sO0mC7rC0tO0rP4bR4mL4kH4oS2kA9mA4aK5kO4zX1bZ6wG0kR7rM9kL6hQ8e
+    user-secret-key: authentication
+
   alioss:
     endpoint: ${firmament-dev.alioss.endpoint}
     bucket-name: ${firmament-dev.alioss.bucket-name}
     access-key-id: ${firmament-dev.alioss.access-key-id}
     access-key-secret: ${firmament-dev.alioss.access-key-secret}
+
+  wechat:
+    appid: ${firmament-dev.wechat.appid}
+    secret: ${firmament-dev.wechat.secret}
