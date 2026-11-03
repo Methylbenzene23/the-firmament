@@ -65,7 +65,7 @@ public interface DishService {
      * @param categoryId
      * @return
      */
-    Dish[] getByCategoryId(Long categoryId);
+    List<Dish> getByCategoryId(Long categoryId);
 
     /**
      * 根据分类ID查询菜品与口味
@@ -73,5 +73,5 @@ public interface DishService {
      * @param categoryId
      * @return
      */
-    List<DishVO> getByCategoryIdWithFlavor(Long categoryId);
+    List<DishVO> getEnableDishWithFlavorByCategoryId(Long categoryId);
 }

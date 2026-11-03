@@ -31,9 +31,9 @@ public class DishController {
      */
     @GetMapping("/list")
     @ApiOperation("根据分类ID查询菜品")
-    public Result<List<DishVO>> getByCategoryIdWithFlavor(Long categoryId){
-        log.info("查询分类ID: {} 下的所有菜品",categoryId);
-        List<DishVO> dishes = dishService.getByCategoryIdWithFlavor(categoryId);
+    public Result<List<DishVO>> getEnableDishWithFlavorByCategoryId(Long categoryId){
+        log.info("查询分类ID: {} 下的所有启售菜品",categoryId);
+        List<DishVO> dishes = dishService.getEnableDishWithFlavorByCategoryId(categoryId);
         return Result.success(dishes);
     }
 

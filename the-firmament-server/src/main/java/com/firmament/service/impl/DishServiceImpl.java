@@ -151,7 +151,7 @@ public class DishServiceImpl implements DishService {
      * @return
      */
     @Override
-    public Dish[] getByCategoryId(Long categoryId) {
+    public List<Dish> getByCategoryId(Long categoryId) {
         return dishMapper.selectByCategoryId(categoryId);
     }
 
@@ -162,8 +162,8 @@ public class DishServiceImpl implements DishService {
      * @return
      */
     @Override
-    public List<DishVO> getByCategoryIdWithFlavor(Long categoryId) {
-        Dish[] dishes = dishMapper.selectByCategoryId(categoryId);
+    public List<DishVO> getEnableDishWithFlavorByCategoryId(Long categoryId) {
+        List<Dish> dishes = dishMapper.selectEnabledByCategoryId(categoryId);
         List<DishVO> dishVOS = new ArrayList<>();
         for (Dish dish : dishes) {
             DishVO dishVO = new DishVO();

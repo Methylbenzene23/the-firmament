@@ -118,9 +118,9 @@ public class DishController {
      */
     @GetMapping("/list")
     @ApiOperation("查询指定分类ID内的菜品")
-    public Result<Dish[]> getByCategoryId(Long categoryId){
+    public Result<List<Dish>> getByCategoryId(Long categoryId){
         log.info("查询分类ID: {} 内的菜品",categoryId);
-        Dish[] dishes = dishService.getByCategoryId(categoryId);
+        List<Dish> dishes = dishService.getByCategoryId(categoryId);
         return Result.success(dishes);
     }
 }
