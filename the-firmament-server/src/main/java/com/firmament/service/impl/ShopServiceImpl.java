@@ -23,6 +23,11 @@ public class ShopServiceImpl implements ShopService {
         redisTemplate.opsForValue().set(RedisKeyConstant.SHOP_STATUS,status);
     }
 
+    /**
+     * 获得店铺营业状态
+     *
+     * @return
+     */
     @Override
     public Integer getStatus() {
         return (Integer) redisTemplate.opsForValue().get(RedisKeyConstant.SHOP_STATUS);

@@ -24,7 +24,7 @@ public interface SetmealService {
      *
      * @param setmealDTO
      */
-    void saveWithDishes(SetmealDTO setmealDTO);
+    SetmealVO saveWithDishes(SetmealDTO setmealDTO);
 
     /**
      * 切换套餐状态

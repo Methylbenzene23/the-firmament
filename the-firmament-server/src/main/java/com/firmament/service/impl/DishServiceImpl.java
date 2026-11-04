@@ -17,18 +17,24 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class DishServiceImpl implements DishService {
 
+    private final static String redisDishKeyString = "dish:category:";
+
+    @Autowired
+    private RedisTemplate<String,Object> redisTemplate;
+
     @Autowired
     private DishMapper dishMapper;
-
     @Autowired
     private DishFlavorMapper dishFlavorMapper;
     @Autowired
@@ -57,6 +63,8 @@ public class DishServiceImpl implements DishService {
             });
         }
         dishFlavorMapper.insertBatch(flavors);
+
+        this.cleanRedisCache(redisDishKeyString+dishDTO.getCategoryId());
     }
 
     /**
@@ -94,6 +102,8 @@ public class DishServiceImpl implements DishService {
 
         dishMapper.deleteByIds(ids);
         dishFlavorMapper.deleteByDishIds(ids);
+
+        this.cleanRedisCache(redisDishKeyString+"*");
     }
 
     /**
@@ -133,6 +143,8 @@ public class DishServiceImpl implements DishService {
             });
             dishFlavorMapper.insertBatch(flavors);
         }
+
+        this.cleanRedisCache(redisDishKeyString+"*");
     }
 
     @Override
@@ -142,6 +154,8 @@ public class DishServiceImpl implements DishService {
                 .status(status)
                 .build();
         dishMapper.update(dish);
+
+        this.cleanRedisCache(redisDishKeyString+"*");
     }
 
     /**
@@ -163,15 +177,28 @@ public class DishServiceImpl implements DishService {
      */
     @Override
     public List<DishVO> getEnableDishWithFlavorByCategoryId(Long categoryId) {
+
+        // 构造redis的key,在redis里查询
+        String redisKey = "dish:category:"+categoryId;
+        List<DishVO> redisDishVOList = (List<DishVO>) redisTemplate.opsForValue().get(redisKey);
+        if(redisDishVOList != null){
+            return redisDishVOList;
+        }
+        //redis不存在时，从数据库查询，写入redis
         List<Dish> dishes = dishMapper.selectEnabledByCategoryId(categoryId);
-        List<DishVO> dishVOS = new ArrayList<>();
+        List<DishVO> DatabasedishVOList = new ArrayList<>();
         for (Dish dish : dishes) {
             DishVO dishVO = new DishVO();
             List<DishFlavor> dishFlavors = dishFlavorMapper.selectByDishId(dish.getId());
             BeanUtils.copyProperties(dish,dishVO);
             dishVO.setFlavors(dishFlavors);
-            dishVOS.add(dishVO);
+            DatabasedishVOList.add(dishVO);
         }
-        return dishVOS;
+        redisTemplate.opsForValue().set(redisKey,DatabasedishVOList);
+        return DatabasedishVOList;
+    }
+
+    private void cleanRedisCache(String pattern){
+        redisTemplate.delete(redisTemplate.keys(pattern));
     }
 }

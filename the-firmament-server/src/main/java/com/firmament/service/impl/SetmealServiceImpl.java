@@ -21,6 +21,8 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,7 +60,8 @@ public class SetmealServiceImpl implements SetmealService {
      */
     @Transactional
     @Override
-    public void saveWithDishes(SetmealDTO setmealDTO) {
+    @CacheEvict(cacheNames = "setmealList", allEntries = true)
+    public SetmealVO saveWithDishes(SetmealDTO setmealDTO) {
         Setmeal setmeal = new Setmeal();
         BeanUtils.copyProperties(setmealDTO,setmeal);
         setmeal.setStatus(StatusConstant.DISABLE);
@@ -72,6 +75,11 @@ public class SetmealServiceImpl implements SetmealService {
             });
             setmealDishMapper.insertBatch(setmealDishes);
         }
+
+        SetmealVO setmealVO = new SetmealVO();
+        BeanUtils.copyProperties(setmeal,setmealVO);
+        setmealVO.setSetmealDishes(setmealDishes);
+        return setmealVO;
     }
 
     /**
@@ -83,6 +91,7 @@ public class SetmealServiceImpl implements SetmealService {
      */
     @Override
     @Transactional
+    @CacheEvict(cacheNames = "setmealList", allEntries = true)
     public void swtichStatus(Long id, Integer status) {
         List<SetmealDish> setmealDishes = setmealDishMapper.selectSetmealDishesBySetmealId(id);
         if(setmealDishes != null && !setmealDishes.isEmpty()){
@@ -124,14 +133,14 @@ public class SetmealServiceImpl implements SetmealService {
      */
     @Override
     @Transactional
+    @CacheEvict(cacheNames = "setmealList", allEntries = true)
     public void editWithSetmealDishes(SetmealDTO setmealDTO) {
         if(setmealDTO.getStatus() == StatusConstant.ENABLE){
             throw new DeletionNotAllowedException(MessageConstant.SETMEAL_ON_SALE);
         }
         Setmeal setmeal = new Setmeal();
-        List<SetmealDish> setmealDishes = new ArrayList<SetmealDish>();
         BeanUtils.copyProperties(setmealDTO,setmeal);
-        setmealDishes = setmealDTO.getSetmealDishes();
+        List<SetmealDish> setmealDishes = setmealDTO.getSetmealDishes();
         for (SetmealDish setmealDish : setmealDishes) {
             setmealDish.setSetmealId(setmealDTO.getId());
         }
@@ -150,6 +159,7 @@ public class SetmealServiceImpl implements SetmealService {
      */
     @Override
     @Transactional
+    @CacheEvict(cacheNames = "setmealList", allEntries = true)
     public void deleteWithSetmealDishIds(List<Long> setmealIds) {
         for (Long setmealId : setmealIds) {
             if(setmealMapper.selectById(setmealId).getStatus() == StatusConstant.ENABLE){
@@ -166,6 +176,7 @@ public class SetmealServiceImpl implements SetmealService {
      * @return
      */
     @Override
+    @Cacheable(cacheNames = "setmealList", key = "#categoryId")
     public List<Setmeal> list(Long categoryId) {
         return setmealMapper.selectByCategoryId(categoryId);
     }
