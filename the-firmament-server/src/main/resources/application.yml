@@ -42,8 +42,8 @@ firmament:
     admin-token-name: token
     admin-secret-key: hX0sV8sU9jR7rC0fT3iT0wV9lU6dW4pS2cO3rT2wG8sW2eG0zG8mR1nZ3vB0yE9o
     user-ttl: ${firmament.jwt.admin-ttl}
-    user-token-name: uW2sO0mC7rC0tO0rP4bR4mL4kH4oS2kA9mA4aK5kO4zX1bZ6wG0kR7rM9kL6hQ8e
-    user-secret-key: authentication
+    user-token-name: authentication
+    user-secret-key: uW2sO0mC7rC0tO0rP4bR4mL4kH4oS2kA9mA4aK5kO4zX1bZ6wG0kR7rM9kL6hQ8e
 
   alioss:
     endpoint: ${firmament-dev.alioss.endpoint}

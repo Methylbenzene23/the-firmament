@@ -19,20 +19,6 @@ public class ShopController {
     private ShopService shopService;
 
     /**
-     * 设置店铺营业状态
-     *
-     * @param status
-     * @return
-     */
-    @PutMapping("/{status}")
-    @ApiOperation("设置店铺营业状态")
-    public Result switchStatus(@PathVariable Integer status){
-        log.info("设置营业状态为: {}",status == StatusConstant.ENABLE ? "营业中":"打烊中");
-        shopService.switchStatus(status);
-        return Result.success();
-    }
-
-    /**
      * 获取店铺营业状态
      *
      * @return
