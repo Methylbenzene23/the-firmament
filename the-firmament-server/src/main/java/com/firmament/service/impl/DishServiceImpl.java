@@ -191,6 +191,7 @@ public class DishServiceImpl implements DishService {
             DishVO dishVO = new DishVO();
             List<DishFlavor> dishFlavors = dishFlavorMapper.selectByDishId(dish.getId());
             BeanUtils.copyProperties(dish,dishVO);
+            dishVO.setPrice(dishVO.getPrice().movePointRight(2));
             dishVO.setFlavors(dishFlavors);
             DatabasedishVOList.add(dishVO);
         }
